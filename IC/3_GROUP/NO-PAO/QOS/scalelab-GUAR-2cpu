@@ -1,0 +1,22 @@
+pwd=`/bin/pwd`
+ocp_host=e31-h23-000-r650.rdu2.scalelab.redhat.com
+k8susr=kni
+tags=lab:scale,PAO:no,datapath:ovn-ic,cpu:2-guaranteed
+
+#master-0   Ready    control-plane,master    12d   v1.26.5+0001a21
+#master-1   Ready    control-plane,master    12d   v1.26.5+0001a21
+#master-2   Ready    control-plane,master    12d   v1.26.5+0001a21
+#worker-0   Ready    mcp-offloading,worker   12d   v1.26.5+0001a21
+#worker-1   Ready    worker                  12d   v1.26.5+0001a21
+#worker-2   Ready    worker                  12d   v1.26.5+0001a21
+#worker-3   Ready    worker                  12d   v1.26.5+0001a21
+#worker-4   Ready    worker                  12d   v1.26.5+0001a21
+#worker-5   Ready    worker                  12d   v1.26.5+0001a21
+
+# regular worker nodes
+worker1=worker-1  # driver 1
+worker2=worker-2  # driver 2
+worker3=worker-3  # system-under-test
+
+resources_opt=",resources:default:$pwd/resource-static-2cpu.json"
+
