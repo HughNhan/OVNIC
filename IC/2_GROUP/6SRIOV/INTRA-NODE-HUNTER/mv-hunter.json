@@ -3,10 +3,11 @@
     {
       "name": "common-params",
       "params": [
-        { "arg": "ifname", "vals": ["eth0"], "role": "server" },
+        { "arg": "ifname", "vals": ["net1"], "role": "server" },
         { "arg": "time", "vals": ["120"] },
         { "arg": "omit", "vals": ["3"] },
         { "arg": "protocol", "vals": ["udp"] },
+        { "arg": "ipv", "vals": ["6"], "role": "all" },
         { "arg": "length", "vals": ["576", "1200"] }
       ]
     }

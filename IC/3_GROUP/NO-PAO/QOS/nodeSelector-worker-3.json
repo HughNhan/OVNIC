@@ -1,0 +1,3 @@
+"nodeSelector": {
+    "kubernetes.io/hostname": "worker003-r650"
+}

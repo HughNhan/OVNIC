@@ -3,6 +3,8 @@
 # -*- mode: sh; indent-tabs-mode: nil; sh-basic-offset: 4 -*-
 
 samples=3 # Ideally use at least 3 samples for each benchmark iteration.
+mv_params_files=("mv-hunter.json") 
+other_tags=",cni:ovn-k-sriov-ipv6" #
 
 # Variables which apply to all test environments
 ################################################
@@ -20,10 +22,6 @@ osruntime=chroot # can be pod or kata for OCP (not yet verified for SRIOV), chro
 scale_up_factor="1" # Number of client-server pairs per host/node/node-pair
 interhost_dir=forward # forward, reverse, bidirec
 max_failures=1 # After this many failed samples the run will quit
-other_tags=",cni:ovn-ic" # Comma-separated list of something=value, these help you identify this run as different
-            #  from other runs, for example:  "cloud-reservation:48,HT:off,CVE:off"
-            # Note that many tags are auto-generated below
-mv_params_files=("mv-hunter.json") # All benchmark-iterations are built from this file
 
 # Variables for ocp/k8s environments
 ####################################
@@ -35,7 +33,7 @@ pod_qos=burstable # static = guaranteed pod, burstable = default pos qos
 ocphost=e31-h23-000-r650.rdu2.scalelab.redhat.com # must be able to ssh without password prompt
 k8susr=kni # Might be "root" or "kni" for some installations
 # Use for SRIOV or comment out for default network
-#annotations="`/bin/pwd`/annotations.json" # Use for SRIOV or comment out for default network
+annotations="`/bin/pwd`/sriov-annotations.json" # Use for SRIOV or comment out for default network
                                            # Must populate this file with correct annotation
 # Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
 #annotations=`/bin/pwd`/no-irq-annotations.json
@@ -99,10 +97,16 @@ fi
 
 if [ ! -z "$annotations" ]; then
     if [ -f "$annotations" ]; then
+        ssh $k8susr@$ocphost "kubectl delete ns crucible-rickshaw"
+        ssh $k8susr@$ocphost "kubectl create ns crucible-rickshaw"
+
+        # crucible delete NS and thus also delete neworkAttachmentDefinition. Now we need to recreta them.
+        ssh $k8susr@$ocphost "kubectl apply -f /home/kni/SRIOV/SRIOV-testbed/ICE-SRIOV/EAST/generated_manifests/where-nad.yml"
         echo "Using annotations: $annotations"
-        anno_opt=",annotations:default:$annotations"
+        anno_opt=",annotations:client-1:$annotations"
+        anno_opt+=",annotations:server-1:$annotations"
     else
-        echo "Annoations file missing: $annotations"
+        echo "Annotations file missing: $annotations"
         exit
     fi
 else

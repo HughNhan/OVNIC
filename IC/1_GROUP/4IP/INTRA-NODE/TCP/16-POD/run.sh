@@ -2,7 +2,8 @@
 # vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=bash
 # -*- mode: sh; indent-tabs-mode: nil; sh-basic-offset: 4 -*-
 
-samples=3 # Ideally use at least 3 samples for each benchmark iteration.
+samples=3         
+scale_up_factor="8" # Number of client-server pairs per host/node/node-pair
 
 # Variables which apply to all test environments
 ################################################
@@ -17,30 +18,29 @@ scale_out_factor=1   # Determines the number of hosts/nodes that will get used
                  #  pods are on the same worker (no external traffic)
 userenv=fedora38 # can be centos7, centos8, stream, rhubi8, debian, opensuse
 osruntime=chroot # can be pod or kata for OCP (not yet verified for SRIOV), chroot for remotehost
-scale_up_factor="1" # Number of client-server pairs per host/node/node-pair
-interhost_dir=forward # forward, reverse, bidirec
+
+
 max_failures=1 # After this many failed samples the run will quit
-other_tags=",cni:ovn-ic" # Comma-separated list of something=value, these help you identify this run as different
+user_tags="cni:ovn-ic,topo:internode" # Comma-separated list of something=value, these help you identify this run as different
             #  from other runs, for example:  "cloud-reservation:48,HT:off,CVE:off"
             # Note that many tags are auto-generated below
-mv_params_files=("mv-hunter.json") # All benchmark-iterations are built from this file
+mv_params_file="uperf-mv-params.json" # All benchmark-iterations are built from this file
 
 # Variables for ocp/k8s environments
 ####################################
-num_cpus=40  # A few fewer than the number of *Allocatable* cpus on each of the workers.
+num_cpus=110   # A few fewer than the number of *Allocatable* cpus on each of the workers.
              # as reported by oc describe node/node-name
              # This affects cpu request (and limit for static qos)
              # TODO: this should be automatically calculated.
 pod_qos=burstable # static = guaranteed pod, burstable = default pos qos
-ocphost=e31-h23-000-r650.rdu2.scalelab.redhat.com # must be able to ssh without password prompt
+ocphost=e31-h23-000-r650.rdu2.scalelab.redhat.com
 k8susr=kni # Might be "root" or "kni" for some installations
-# Use for SRIOV or comment out for default network
-#annotations="`/bin/pwd`/annotations.json" # Use for SRIOV or comment out for default network
-                                           # Must populate this file with correct annotation
-# Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
+  # Use for SRIOV or comment out for default network
+#annotations=`/bin/pwd`/sriov-annotations.json # Use for SRIOV or comment out for default network
+                                                # Must populate this file with correct annotation
+  # Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
 #annotations=`/bin/pwd`/no-irq-annotations.json
 #runtimeClassNameOpt=",runtimeClassName:performance-performance"
-securityContext_file="`/bin/pwd`/securityContext.json"
 irq="bal" # bal by default or rrHost or <something-else> depending on what manual mods made
           # This is completely manual and needs to be confirmed by the user!
 
@@ -52,22 +52,21 @@ bmlhostb=
 
 
 resource_file="`/bin/pwd`/resource.json"
-
+    
 # Create a resource JSON to size the pods
 function gen_resource_file() {
     local cpu=$1
-    echo $cpu
     if [ "$pod_qos" == "static" ]; then
         # use whole numbers for CPU
         echo '"resources": {'     >$resource_file
         echo '    "requests": {' >>$resource_file
         # TODO: horribly broken! Need to round down to whole number!
-        echo '        "cpu": "2",' >>$resource_file
+        echo '        "cpu": "4",' >>$resource_file
         echo '        "memory": "2048Mi"' >>$resource_file
         echo '    },' >>$resource_file
         echo '    "limits": {' >>$resource_file
         # TODO: horribly broken! Need to round down to whole number!
-        echo '        "cpu": "2",' >>$resource_file
+        echo '        "cpu": "4",' >>$resource_file
         echo '        "memory": "2048Mi"' >>$resource_file
         echo '    }' >>$resource_file
         echo '}' >>$resource_file
@@ -92,7 +91,7 @@ if [ ! -z "$missing_bins" ]; then
     echo $missing_bins
     exit 1
 fi
-
+    
 
 # What is below is code to generate the appropriate crucible command to tun your test.
 # There is a ton of duplicated code that needs to be consolidated.
@@ -100,7 +99,7 @@ fi
 if [ ! -z "$annotations" ]; then
     if [ -f "$annotations" ]; then
         echo "Using annotations: $annotations"
-        anno_opt=",annotations:default:$annotations"
+        anno_opt=",annotations:$annotations"
     else
         echo "Annoations file missing: $annotations"
         exit
@@ -109,15 +108,11 @@ else
     anno_opt=""
 fi
 
-for params_file in ${mv_params_files[@]}; do
- for num_pods in $scale_up_factor; do
+for num_pods in $scale_up_factor; do
     num_clients=`echo "$num_pods * $scale_out_factor" | bc`
     num_servers=$num_clients
-    num_cpus=60  # A few fewer than the number of *Allocatable* cpus on each of the workers.
     if [ "$topo" != "interhost" ]; then # Any test involving ocp/k8s
         ssh $k8susr@$ocphost "kubectl get nodes -o json" >nodes.json
-        ## NOTE THIS IS REVERSED
-        #workers=(`jq -r '.items[] | .metadata.labels | select(."node-role.kubernetes.io/worker" != null) | ."kubernetes.io/hostname"' nodes.json | grep -v worker- | sort -r | tr '\n' ' '`)
         workers=(`jq -r '.items[] | .metadata.labels | select(."node-role.kubernetes.io/worker" != null) | ."kubernetes.io/hostname"' nodes.json | tr '\n' ' '`)
         first_worker=`echo ${workers[0]}`
         if [ -z "$first_worker" ]; then
@@ -134,13 +129,13 @@ for params_file in ${mv_params_files[@]}; do
             echo "Need at least $min_worker_nodes to run tests, and this cluster only has ${#workers[@]}"
             exit 1
         fi
-	if [ "$topo" == "intranode" ]; then
-		num_cpus=$(( $num_cpus/2 ))
-	fi
-	echo $num_pods
-        per_pod_cpu=$(echo "1000 * $num_cpus / $num_pods" | bc)m
-        gen_resource_file $per_pod_cpu
+        if [ "$topo" == "intranode" ]; then
+            per_pod_cpu=`echo "1000 * $num_cpus / $num_pods" / 2 | bc`m
+        else
+            per_pod_cpu=`echo "1000 * $num_cpus / $num_pods" | bc`m
+        fi
 
+        gen_resource_file $per_pod_cpu
         ssh $k8susr@$ocphost "kubectl get nodes/$first_worker -o json" >worker.json
         kernel=`jq -r .status.nodeInfo.kernelVersion worker.json`
         rcos=`jq -r .status.nodeInfo.osImage  worker.json | awk -F"CoreOS " '{print $2}' | awk '{print $1}'`
@@ -186,15 +181,13 @@ for params_file in ${mv_params_files[@]}; do
         endpoint_opt+=",userenv:$userenv"
         endpoint_opt+=",resources:default:$resource_file"
         endpoint_opt+=",osruntime:${osruntime}"
-        # NOTE: Masters collection is OFF
-        endpoint_opt+=",masters-tool-collect:0"
-        endpoint_opt+=",securityContext:default:$securityContext_file"
+        endpoint_opt+="$anno_opt"
         endpoint_opt+="${runtimeClassNameOpt}"
     else
         echo "interhost"
         endpoint_opt=""
         network_type=flat
-        network_mtu=1500 # TODO: get actual mtu
+        network_mtu=8900 # TODO: get actual mtu
         rcos=na
         kernel=`ssh $bmlhosta uname -r`
     fi
@@ -209,41 +202,17 @@ for params_file in ${mv_params_files[@]}; do
         endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhosta,server:1-$num_pods,userenv:$userenv "
     elif [ "$topo" == "interhost" ]; then
         # TODO: make work for $scale_out_factor > 1
-        if [ "$interhost_dir" == "forward" ]; then
-            endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhosta,client:1-$num_pods,userenv:$userenv,osruntime:$osruntime"
-            endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhostb,server:1-$num_pods,userenv:$userenv,osruntime:$osruntime"
-        elif [ "$interhost_dir" == "reverse" ]; then
-            endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhosta,server:1-$num_pods,userenv:$userenv,osruntime:$osruntime"
-            endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhostb,client:1-$num_pods,userenv:$userenv,osruntime:$osruntime"
-        elif [ "$interhost_dir" == "bidirec" ]; then
-            odd_ids=`seq 1 2 $(($num_pods*2)) | tr '\n' '+'  | sed -e s/+$//`
-            even_ids=`seq 2 2 $(($num_pods*2)) | tr '\n' '+'  | sed -e s/+$//`
-            endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhosta,client:$odd_ids,server:$even_ids,userenv:$userenv,osruntime:$osruntime"
-            endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhostb,server:$odd_ids,client:$even_ids,userenv:$userenv,osruntime:$osruntime"
-        fi
+        endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhosta,client:1-$num_pods,userenv:$userenv,osruntime:$osruntime"
+        endpoint_opt+=" --endpoint remotehost,user:root,host:$bmlhostb,server:1-$num_pods,userenv:$userenv,osruntime:$osruntime"
     fi
 
-    readarray -d . -t test_params < <(printf '%s' "$params_file")
     tags="sdn:$network_type,mtu:$network_mtu,rcos:$rcos,kernel:$kernel,irq:$irq,userenv:$userenv,osruntime:$osruntime"
-    #tags+=",topo:$topo,pods-per-worker:$num_pods,scale_out_factor:$scale_out_factor,datapath:${test_params[4]}"
     tags+=",topo:$topo,pods-per-worker:$num_pods,scale_out_factor:$scale_out_factor"
-    #tags+=",proto:${test_params[2]},test:${test_params[3]}"
-    endpoint_opt+="$anno_opt"
-
-    #if [ "${test_params[4]}" = "ovn-k-hw-offload" ]; then
-        #endpoint_opt+="$anno_opt"
-    #fi
-    if [ "$topo" == "interhost" ]; then
-        tags+=",dir:$interhost_dir"
-    fi
     if [ "$topo" == "internode" -a "$topo" == "intranode" ]; then
         tags+=",pod_qos:$pod_qos"
     fi
     if [ ! -z "$other_tags" ]; then
-        tags+="$other_tags"
+        tags+="other_tags"
     fi
-    time  crucible run iperf --tags $tags --mv-params $params_file --num-samples=$samples --max-sample-failures=$max_failures $endpoint_opt
-    #echo  crucible run iperf --tags $tags --mv-params $params_file --num-samples=$samples --max-sample-failures=$max_failures $endpoint_opt
-    date
- done
+    time crucible run uperf --tags $tags --mv-params $mv_params_file --num-samples=$samples --max-sample-failures=$max_failures $endpoint_opt  --max-rb-attempts=3
 done
