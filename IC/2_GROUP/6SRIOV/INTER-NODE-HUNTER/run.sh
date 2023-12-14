@@ -3,7 +3,7 @@
 # -*- mode: sh; indent-tabs-mode: nil; sh-basic-offset: 4 -*-
 
 samples=1 # Ideally use at least 3 samples for each benchmark iteration.
-mv_params_files=("mv-one.json") 
+mv_params_files=("mv-hunter.json") 
 other_tags=",cni:ovn-k-sriov-ipv6" #
 
 # Variables which apply to all test environments
