@@ -19,7 +19,7 @@ spec:
     args: [ "while true; do sleep 300000; done;" ]
     resources:
       requests:
-        openshift.io/intelnic_east: '1'
+        openshift.io/mlxnic_east: '1'
       limits:
-        openshift.io/intelnic_east: '1'
+        openshift.io/mlxnic_east: '1'
 
