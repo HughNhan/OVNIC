@@ -5,8 +5,7 @@
 samples=3 # Ideally use at least 3 samples for each benchmark iteration.
 mv_params_files=("mv-hunter.json") 
 other_tags=",cni:ovn-k-sriov" #
-DEFAULT_HOST=e31-h23-000-r650.rdu2.scalelab.redhat.com
-ocphost="${ocphost:-$DEFAULT_HOST}"
+ocphost=$OCPHOST
 
 # Variables which apply to all test environments
 ################################################
@@ -102,7 +101,7 @@ if [ ! -z "$annotations" ]; then
         ssh $k8susr@$ocphost "kubectl create ns crucible-rickshaw"
 
         # crucible delete NS and thus also delete neworkAttachmentDefinition. Now we need to recreta them.
-        ssh $k8susr@$ocphost "kubectl apply -f /home/kni/SRIOV/SRIOV-testbed/ICE-SRIOV/EAST/generated_manifests/where-nad.yml"
+        ssh $k8susr@$ocphost "kubectl apply -f ${SRIOV_NAD}"
         echo "Using annotations: $annotations"
         anno_opt=",annotations:client-1:$annotations"
         anno_opt+=",annotations:server-1:$annotations"

@@ -1,5 +1,5 @@
 pwd=`/bin/pwd`
-ocp_host=e31-h23-000-r650.rdu2.scalelab.redhat.com
+ocp_host=$OCPHOST
 k8susr=kni
 tags=lab:scale,PAO:no,datapath:ovn-ic,cpu:2-guaranteed
 
