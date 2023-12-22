@@ -1,6 +1,6 @@
 #!/bin/bash
 
-num_samples=1
+num_samples=3
 config=$1
 placement=./standard-32pairs.placement
 if [ -z "$config" ]; then
