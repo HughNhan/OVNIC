@@ -4,7 +4,7 @@
 source ./setting.env
 source ./functions.sh
 
-PAUSE=${PAUSE:-true}
+PAUSE=${PAUSE:-false}
 
 if [ $PAUSE == true ]; then
   echo mc will NOT apply now due to PAUSE=$PAUSE
@@ -49,7 +49,7 @@ fi
 #echo "short  remove the mcp-$VENDOR-vf mcp  ..."
 #exit
 
-echo "Continue if you want to also remove the mcp-intel-vf mcp  ..."
+echo "Continue if you want to also remove the mcp-*-vf mcp  ..."
 prompt_continue
 
 # step 2 - remove label from nodes

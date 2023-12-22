@@ -1,0 +1,31 @@
+apiVersion: performance.openshift.io/v2
+kind: PerformanceProfile
+metadata:
+  name: mcp-mlx-vf
+spec:
+  cpu:
+    isolated: "2-55,58-111"
+    reserved: "0,56,1,57"
+  additionalKernelArgs:
+  - "nohz_full: 2-55,58-111"
+  globallyDisableIrqLoadBalancing: false
+  hugepages:
+    defaultHugepagesSize: "1G"
+    pages:
+    - size: "1G"
+      count: 16 
+  realTimeKernel:
+    enabled: false 
+  workloadHints:
+    realTime: False
+    highPowerConsumption: false
+    perPodPowerManagement: true
+  numa:
+    topologyPolicy: "single-numa-node"
+  net:
+    userLevelNetworking: false
+
+  nodeSelector:
+    node-role.kubernetes.io/mcp-mlx-vf: "" 
+  machineConfigPoolSelector:
+   machineconfiguration.openshift.io/role: mcp-mlx-vf

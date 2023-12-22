@@ -37,8 +37,7 @@ else
     echo "No SriovNetworkNodePolicy to remove"
 fi
 
-echo "short  remove the mcp-intel-vf mcp  ..."
-exit
+#echo "short  remove the mcp-intel-vf mcp  ..."; exit
 
 echo "Continue if you want to also remove the mcp-intel-vf mcp  ..."
 prompt_continue
