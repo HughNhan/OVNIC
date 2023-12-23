@@ -1,6 +1,6 @@
 #!/bin/bash
 
-num_samples=1
+num_samples=3
 config=$1
 placement=./standard-32pairs.placement
 if [ -z "$config" ]; then
@@ -51,8 +51,10 @@ nodeSelector:server-${worker2_servers}:$pwd/nodeSelector-$worker2.json,\
 nodeSelector:client-${worker3_clients}:$pwd/nodeSelector-$worker3.json,\
 nodeSelector:server-${worker3_servers}:$pwd/nodeSelector-$worker3.json,\
 userenv:fedora38,\
+runtimeClassName:performance-mcp-mlx-vf,\
 masters-tool-collect:0,\
 client:1-32,\
 server:1-32${annotation_opt}${resources_opt}
 
-#runtimeClassName:performance-manual,\
+# benchmark client and server pods require PAO runtimeClassName
+

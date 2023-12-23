@@ -22,6 +22,3 @@ worker3=worker-0  # system-under-test
 # benchmark client and server pods require annotation to use SRIOV
 #annotation_opt=",annotations:server-${worker3_servers}:$pwd/annotations-sriov.json,annotations:client-${worker3_clients}:$pwd/annotations-sriovhwol.json"
 
-# benchmark client and server pods require PAO runtimeClassName
-runtimeClassName:performance-mcp-mlx-vf,\
-
