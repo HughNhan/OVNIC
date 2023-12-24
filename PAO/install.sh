@@ -26,6 +26,11 @@ if ! oc get mcp $MCP 2>/dev/null; then
     echo "create mcp for ${MCP}: done"
 fi
 
+# make sure MCP is labeled
+if oc get mcp ${MCP} ; then
+   oc label --overwrite mcp ${MCP} machineconfiguration.openshift.io/role=${MCP}
+fi
+
 mkdir -p ${MANIFEST_DIR}/
 
 ##### Step 3 - SKIP install PAO since version > 4.10 
