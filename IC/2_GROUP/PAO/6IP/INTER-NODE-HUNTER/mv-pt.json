@@ -1,0 +1,36 @@
+{
+  "global-options": [
+    {
+      "name": "common-params",
+      "params": [
+        { "arg": "ifname", "vals": ["eth0"], "role": "server" },
+        { "arg": "time", "vals": ["30"] },
+        { "arg": "protocol", "vals": ["udp"] },
+        { "arg": "length", "vals": ["576"] },
+        { "arg": "bitrate-range", "vals": ["30M-500M"], "role": "client" }
+      ]
+    }
+  ],
+  "sets": [
+    {
+      "include": "common-params",
+      "params": [
+        { "arg": "max-loss-pct", "vals": ["0"], "role": "client" },
+        { "arg": "passthru", "vals": ["-V,-fm,-l576,-i1,-u,-t30"], "role": "client" }
+      ]
+    },
+
+    {
+      "include": "common-params",
+      "params": [
+        { "arg": "max-loss-pct", "vals": ["0"], "role": "client" }
+      ]
+    },
+    {
+      "include": "common-params",
+      "params": [
+        { "arg": "max-loss-pct", "vals": ["0.01"], "role": "client" }
+      ]
+    }
+ ]
+}

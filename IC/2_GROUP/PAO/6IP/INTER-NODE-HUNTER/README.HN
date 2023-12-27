@@ -1,0 +1,8 @@
+
+       { "arg": "passthru", "vals": ["-V,-fm,-l576,-i1,-u,-t4"], "role": "client" }
+
+-l576   : PDU length
+-u      : UDP
+-t4     : duration 4secon
+-i1     ; pause 1 second between periodic report
+ 

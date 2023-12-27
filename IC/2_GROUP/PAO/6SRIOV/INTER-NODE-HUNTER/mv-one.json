@@ -1,0 +1,23 @@
+{
+  "global-options": [
+    {
+      "name": "common-params",
+      "params": [
+        { "arg": "ifname", "vals": ["net1"], "role": "server" },
+        { "arg": "time", "vals": ["10"] },
+        { "arg": "omit", "vals": ["3"] },
+        { "arg": "protocol", "vals": ["udp"] },
+        { "arg": "ipv", "vals": ["6"], "role": "all" },
+        { "arg": "length", "vals": ["576"] }
+      ]
+    }
+  ],
+  "sets": [
+    {
+      "include": "common-params",
+      "params": [
+        { "arg": "bitrate", "vals": ["2500M"], "role": "client" }
+      ]
+    }
+ ]
+}
