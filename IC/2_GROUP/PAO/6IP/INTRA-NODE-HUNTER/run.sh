@@ -20,7 +20,7 @@ osruntime=chroot # can be pod or kata for OCP (not yet verified for SRIOV), chro
 scale_up_factor="1" # Number of client-server pairs per host/node/node-pair
 interhost_dir=forward # forward, reverse, bidirec
 max_failures=1 # After this many failed samples the run will quit
-other_tags=",cni:ovn-ic" # Comma-separated list of something=value, these help you identify this run as different
+other_tags=",cni:ovnk,pao:ena" # Comma-separated list of something=value, these help you identify this run as different
             #  from other runs, for example:  "cloud-reservation:48,HT:off,CVE:off"
             # Note that many tags are auto-generated below
 mv_params_files=("mv-hunter.json") # All benchmark-iterations are built from this file
@@ -39,7 +39,9 @@ k8susr=kni # Might be "root" or "kni" for some installations
                                            # Must populate this file with correct annotation
 # Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
 #annotations=`/bin/pwd`/no-irq-annotations.json
+annotations=`/bin/pwd`/annotations-noirqs.json
 #runtimeClassNameOpt=",runtimeClassName:performance-performance"
+runtimeClassNameOpt=",runtimeClassName:performance-mcp-mlx-vf"
 securityContext_file="`/bin/pwd`/securityContext.json"
 irq="bal" # bal by default or rrHost or <something-else> depending on what manual mods made
           # This is completely manual and needs to be confirmed by the user!
