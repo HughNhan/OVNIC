@@ -2,7 +2,7 @@
 # vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=bash
 # -*- mode: sh; indent-tabs-mode: nil; sh-basic-offset: 4 -*-
 
-samples=1 # Ideally use at least 3 samples for each benchmark iteration.
+samples=3 # Ideally use at least 3 samples for each benchmark iteration.
 mv_params_files=("mv-hunter.json") 
 other_tags=",cni:ovnk,pao:ena,sriov:true" #
 
