@@ -33,7 +33,7 @@ pod_qos=burstable # static = guaranteed pod, burstable = default pos qos
 ocphost=$OCPHOST
 k8susr=kni # Might be "root" or "kni" for some installations
 # Use for SRIOV or comment out for default network
-annotations="`/bin/pwd`/sriov-annotations.json" # Use for SRIOV or comment out for default network
+#annotations="`/bin/pwd`/sriov-annotations.json" # Use for SRIOV or comment out for default network
                                            # Must populate this file with correct annotation
 # Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
 annotations=`/bin/pwd`/sriov-noirqs-annotations.json
