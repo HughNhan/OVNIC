@@ -1,0 +1,2 @@
+"annotations": { "k8s.v1.cni.cncf.io/networks": "east-sriov-net", "irq-load-balancing.crio.io": "disable" }
+

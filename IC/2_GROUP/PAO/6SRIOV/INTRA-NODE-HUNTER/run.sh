@@ -4,7 +4,7 @@
 
 samples=3 # Ideally use at least 3 samples for each benchmark iteration.
 mv_params_files=("mv-hunter.json") 
-other_tags=",cni:ovn-k-sriov-ipv6" #
+other_tags=",cni:ovn-k-sriov-ipv6,pao:ena" #
 
 # Variables which apply to all test environments
 ################################################
@@ -33,11 +33,11 @@ pod_qos=burstable # static = guaranteed pod, burstable = default pos qos
 ocphost=$OCPHOST
 k8susr=kni # Might be "root" or "kni" for some installations
 # Use for SRIOV or comment out for default network
-annotations="`/bin/pwd`/sriov-annotations.json" # Use for SRIOV or comment out for default network
+#annotations="`/bin/pwd`/sriov-annotations.json" # Use for SRIOV or comment out for default network
                                            # Must populate this file with correct annotation
 # Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
-#annotations=`/bin/pwd`/no-irq-annotations.json
-#runtimeClassNameOpt=",runtimeClassName:performance-performance"
+annotations=`/bin/pwd`/sriov-noirqs-annotations.json
+runtimeClassNameOpt=",runtimeClassName:performance-mcp-mlx-vf"
 securityContext_file="`/bin/pwd`/securityContext.json"
 irq="bal" # bal by default or rrHost or <something-else> depending on what manual mods made
           # This is completely manual and needs to be confirmed by the user!
