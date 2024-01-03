@@ -1,7 +1,7 @@
 pwd=`/bin/pwd`
 ocp_host=$OCPHOST
 k8susr=kni
-tags=lab:scale,datapath:ovnk,pao:true,gu:false
+tags=lab:scale,datapath:$DP,pao:true,gu:false
 
 #NAME       STATUS   ROLES                  AGE   VERSION
 #master-0   Ready    control-plane,master   21h   v1.27.6+98158f9

@@ -4,7 +4,7 @@
 
 samples=3 # Ideally use at least 3 samples for each benchmark iteration.
 mv_params_files=("mv-hunter.json") 
-other_tags=",cni:ovn-k-sriov-ipv6,pao:ena" #
+other_tags=",datapath:$DP-sriov-ipv6,pao:ena" #
 
 # Variables which apply to all test environments
 ################################################

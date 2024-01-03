@@ -1,7 +1,7 @@
 pwd=`/bin/pwd`
 ocp_host=$OCPHOST
 k8susr=kni
-tags=lab:scale,PAO:no,datapath:ovn-ic,cpu:2-guaranteed
+tags=lab:scale,PAO:no,datapath:$DP,cpu:2-guaranteed
 
 #master-0   Ready    control-plane,master    12d   v1.26.5+0001a21
 #master-1   Ready    control-plane,master    12d   v1.26.5+0001a21

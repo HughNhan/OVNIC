@@ -21,7 +21,7 @@ osruntime=chroot # can be pod or kata for OCP (not yet verified for SRIOV), chro
 
 
 max_failures=1 # After this many failed samples the run will quit
-user_tags="cni:ovn-ic,topo:internode" # Comma-separated list of something=value, these help you identify this run as different
+user_tags="datapath:$DP,topo:internode" # Comma-separated list of something=value, these help you identify this run as different
             #  from other runs, for example:  "cloud-reservation:48,HT:off,CVE:off"
             # Note that many tags are auto-generated below
 mv_params_file="uperf-mv-params.json" # All benchmark-iterations are built from this file

@@ -20,7 +20,7 @@ osruntime=chroot # can be pod or kata for OCP (not yet verified for SRIOV), chro
 scale_up_factor="1" # Number of client-server pairs per host/node/node-pair
 interhost_dir=forward # forward, reverse, bidirec
 max_failures=1 # After this many failed samples the run will quit
-other_tags=",cni:ovnk,PAO:ena" # Comma-separated list of something=value, these help you identify this run as different
+other_tags=",datapath:$DP:ena" # Comma-separated list of something=value, these help you identify this run as different
             #  from other runs, for example:  "cloud-reservation:48,HT:off,CVE:off"
             # Note that many tags are auto-generated below
 mv_params_files=("mv-hunter.json") # All benchmark-iterations are built from this file
