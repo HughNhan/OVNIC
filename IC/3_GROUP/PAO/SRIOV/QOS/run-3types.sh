@@ -1,6 +1,6 @@
 #!/bin/bash
 
-num_samples=6
+num_samples=1
 config=$1
 placement=./standard-32pairs.placement
 if [ -z "$config" ]; then
@@ -34,6 +34,16 @@ if [ -z "$num_samples" ]; then
     exit 1
 fi
 
+function create_nad {
+    # crucible delete NS and thus also delete neworkAttachmentDefinition. Now we need to recreta them.
+    k8susr=kni
+    ssh $k8susr@$ocp_host "kubectl delete ns crucible-rickshaw"
+    ssh $k8susr@$ocp_host "kubectl create ns crucible-rickshaw"
+    # Should have sourced OVNIC_ROOT/setting.env for SRIOV_NAD
+    ssh $k8susr@$ocp_host "kubectl apply -f ${SRIOV_NAD}"
+}
+
+create_nad
 
 time crucible run iperf,uperf\
  --mv-params iperf-mv-params.json,uperf-mv-params.json\
