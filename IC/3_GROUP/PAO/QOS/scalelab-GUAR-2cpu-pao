@@ -19,9 +19,10 @@ worker2=worker-2  # driver 2
 worker3=worker-3  # system-under-test
 
 resources_opt=",resources:default:$pwd/resource-static-2cpu.json"
-
-# benchmark client and server pods annotations to disablecpu quot and IRQ loadbalance
+# benchmark client and server pods requires runtimeClass, noirqs and no cpu quota for PAO
 annotation_opt=",annotations:server-${worker1_servers}:$pwd/annotations-noirqs-noquota.json,annotations:client-${worker1_clients}:$pwd/annotations-noirqs-noquota.json,"
-annotation_opt+="annotations:server-${worker2_servers}:$pwd/annotations-noirqs-noquota.json,annotations:client-${worker2_clients}:$pwd/annotations-noirqs-noquota.json,"
-annotation_opt+="annotations:server-${worker3_servers}:$pwd/annotations-noirqs-noquota.json,annotations:client-${worker3_clients}:$pwd/annotations-noirqs-noquota.json"
+annotation_opt+=",annotations:server-${worker2_servers}:$pwd/annotations-noirqs-noquota.json,annotations:client-${worker2_clients}:$pwd/annotations-noirqs-noquota.json,"
+annotation_opt+=",annotations:server-${worker3_servers}:$pwd/annotations-noirqs-noquota.json,annotations:client-${worker3_clients}:$pwd/annotations-noirqs-noquota.json"
+annotation_opt+=",runtimeClassName:performance-mcp-mlx-vf"
+
 

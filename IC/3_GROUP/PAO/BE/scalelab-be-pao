@@ -19,6 +19,12 @@ worker1=worker-1  # Tester 1
 worker2=worker-2  # Tester 2
 worker3=worker-0  # system-under-test
 
-# benchmark client and server pods require annotation to use SRIOV
-#annotation_opt=",annotations:server-${worker3_servers}:$pwd/annotations-sriov.json,annotations:client-${worker3_clients}:$pwd/annotations-sriovhwol.json"
+# benchmark client and server pods require runtimeClass (in run-3type.sh) and IRQ annotations to use PAO
+annotation_opt=",annotations:server-${worker1_servers}:$pwd/annotations-noirqs.json,annotations:client-${worker1_clients}:$pwd/annotations-noirqs.json"
+annotation_opt+=",annotations:server-${worker2_servers}:$pwd/annotations-noirqs.json,annotations:client-${worker2_clients}:$pwd/annotations-noirqs.json"
+annotation_opt+=",annotations:server-${worker3_servers}:$pwd/annotations-noirqs.json,annotations:client-${worker3_clients}:$pwd/annotations-noirqs.json"
+annotation_opt+=",runtimeClassName:performance-mcp-mlx-vf"
+
+# QoS = Guaranteed
+# resources_opt=",resources:default:$pwd/resource-static-2cpu.json"
 
