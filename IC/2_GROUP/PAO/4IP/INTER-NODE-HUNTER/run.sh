@@ -41,7 +41,7 @@ k8susr=kni # Might be "root" or "kni" for some installations
 #annotations=`/bin/pwd`/no-irq-annotations.json
 annotations=`/bin/pwd`/annotations-noirqs.json
 #runtimeClassNameOpt=",runtimeClassName:performance-performance"
-#runtimeClassNameOpt=",runtimeClassName:performance-mcp-mlx-vf"
+runtimeClassNameOpt=",runtimeClassName:performance-mcp-mlx-vf"
 securityContext_file="`/bin/pwd`/securityContext.json"
 irq="bal" # bal by default or rrHost or <something-else> depending on what manual mods made
           # This is completely manual and needs to be confirmed by the user!
