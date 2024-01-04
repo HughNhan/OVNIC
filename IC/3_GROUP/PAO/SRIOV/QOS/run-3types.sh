@@ -48,7 +48,7 @@ create_nad
 
 time crucible run iperf,uperf\
  --mv-params iperf-mv-params.json,uperf-mv-params.json\
- --bench-ids iperf:21-26,uperf:1-14,uperf:27-32\
+ --bench-ids iperf:21-26,uperf:1-20,uperf:27-32\
  --tags $tags\
  --num-samples=$num_samples --max-sample-failures=1\
  --endpoint k8s,user:$k8susr,host:$ocp_host,\
