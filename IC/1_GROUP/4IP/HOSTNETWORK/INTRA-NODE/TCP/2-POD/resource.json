@@ -1,5 +1,5 @@
 "resources": {
     "requests": {
-        "cpu": "110000m"
+        "cpu": "55000m"
     }
 }

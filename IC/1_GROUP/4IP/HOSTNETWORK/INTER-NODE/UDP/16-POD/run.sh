@@ -2,8 +2,8 @@
 # vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=bash
 # -*- mode: sh; indent-tabs-mode: nil; sh-basic-offset: 4 -*-
 
-samples=1         
-scale_up_factor="1" # Number of client-server pairs per host/node/node-pair
+samples=3 
+scale_up_factor="8" # Number of client-server pairs per host/node/node-pair
 
 # Variables which apply to all test environments
 ################################################
@@ -41,7 +41,6 @@ k8susr=kni # Might be "root" or "kni" for some installations
   # Use to disable or enable IRQs, comment out if you are not using Performance Addon Operator
 #annotations=`/bin/pwd`/no-irq-annotations.json
 #runtimeClassNameOpt=",runtimeClassName:performance-performance"
-# Use securityContext for hostNetwork
 securityContext_file="`/bin/pwd`/securityContext.json"
 irq="bal" # bal by default or rrHost or <something-else> depending on what manual mods made
           # This is completely manual and needs to be confirmed by the user!
@@ -180,7 +179,6 @@ for num_pods in $scale_up_factor; do
         endpoint_opt+=",osruntime:${osruntime}"
         endpoint_opt+="$anno_opt"
         endpoint_opt+="${runtimeClassNameOpt}"
-
         if [ ! -z "$securityContext_file" ]; then
             if [ -f "$securityContext_file" ]; then
                 endpoint_opt+=",securityContext:default:$securityContext_file"
