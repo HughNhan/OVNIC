@@ -1,0 +1,22 @@
+{
+  "global-options": [
+    {
+      "name": "common-params",
+      "params": [
+        { "arg": "duration", "vals": ["10"] },
+        { "arg": "protocol", "vals": ["tcp"] },
+        { "arg": "nthreads", "vals": ["1", "64"] },
+        { "arg": "ifname", "vals": ["br-ex"], "role": "server" }
+      ]
+    }
+  ],
+  "sets": [
+    {
+      "include": "common-params",
+      "params": [
+        { "arg": "test-type", "vals": ["stream"] },
+        { "arg": "wsize", "vals": ["32768"] }
+      ]
+    }
+  ]
+}
