@@ -28,7 +28,7 @@ mv_params_file="uperf-mv-params.json" # All benchmark-iterations are built from 
 
 # Variables for ocp/k8s environments
 ####################################
-num_cpus=110   # A few fewer than the number of *Allocatable* cpus on each of the workers.
+num_cpus=100   # A few fewer than the number of *Allocatable* cpus on each of the workers.
              # as reported by oc describe node/node-name
              # This affects cpu request (and limit for static qos)
              # TODO: this should be automatically calculated.
