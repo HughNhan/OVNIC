@@ -33,7 +33,7 @@ num_cpus=100   # A few fewer than the number of *Allocatable* cpus on each of th
              # This affects cpu request (and limit for static qos)
              # TODO: this should be automatically calculated.
 pod_qos=burstable # static = guaranteed pod, burstable = default pos qos
-ocphost=e31-h23-000-r650.rdu2.scalelab.redhat.com
+ocphost=$OCPHOST
 k8susr=kni # Might be "root" or "kni" for some installations
   # Use for SRIOV or comment out for default network
 #annotations=`/bin/pwd`/sriov-annotations.json # Use for SRIOV or comment out for default network
